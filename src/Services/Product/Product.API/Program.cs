@@ -1,17 +1,36 @@
+using Common.Logging;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog(Serilogger.Configure);
 
-// Add services to the container.
+Log.Information("Start Product API up");
 
-builder.Services.AddControllers();
+try
+{
+    // Add services to the container.
 
-var app = builder.Build();
+    builder.Services.AddControllers();
 
-// Configure the HTTP request pipeline.
+    var app = builder.Build();
 
-app.UseHttpsRedirection();
+    // Configure the HTTP request pipeline.
 
-app.UseAuthorization();
+    app.UseHttpsRedirection();
 
-app.MapControllers();
+    app.UseAuthorization();
 
-app.Run();
+    app.MapControllers();
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Unhandled exception");
+}
+finally
+{
+    Log.Information("Shut down Product API complete");
+    Log.CloseAndFlush();
+}
+
