@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   #database section
   orderdb:
@@ -32,6 +30,13 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.7
+  
+#microservice section
+  product.api:
+    image: ${DOCKER_REGISTRY-}product.api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+        context: .
+        dockerfile: Services/Product/Product.API/Dockerfile
 
 
 #network section
@@ -58,3 +63,4 @@ volumes:
     name: mongo_data
   pgadmin_data:
     name: pgadmin_data
+    
