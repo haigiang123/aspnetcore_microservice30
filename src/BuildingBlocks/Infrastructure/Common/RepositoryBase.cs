@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Common
 {
-    public class RepositoryBaseAsync<T, K, TContext> : IRepositoryBaseAsync<T, K, TContext>
+    public class RepositoryBase<T, K, TContext> : IRepositoryBase<T, K, TContext>
         where T : EntityBase<K>
         where TContext : DbContext
     {
@@ -19,7 +19,7 @@ namespace Infrastructure.Common
         private readonly TContext _context;
         private readonly IUnitOfWork<TContext> _unitOfWork;
 
-        public RepositoryBaseAsync(TContext context, IUnitOfWork<TContext> unitOfWork)
+        public RepositoryBase(TContext context, IUnitOfWork<TContext> unitOfWork)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
