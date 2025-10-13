@@ -41,13 +41,17 @@ Build, start and deattach specific containers
 ```Powershell
 docker-compose up -d --build container1 container2
 ```
+Run redis-cli
+```Powershell
+docker-compose exec baskerdb redis-cli
+```
 
 #### 1.1 Application URLs - LOCAL Environment (Docker Container):
 
 
 - Product API: http://localhost:6002/api/products
 - Customer API: http://localhost:6003/api/products
-
+- Basket API: http://localhost:6004/swagger/index.html
 
 #### 1.2 Docker Application URLs - LOCAL Environment (Docker Container):
 
@@ -64,6 +68,7 @@ docker-compose up -d --build container1 container2
 
 - Product API: http://localhost:5002/api/products
 - Customer API: http://localhost:5003/api/products
+- Basket API: http://localhost:5288/swagger/index.html
 
 
 

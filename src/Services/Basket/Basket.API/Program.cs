@@ -1,15 +1,48 @@
+using Basket.API.Extensions;
+using Common.Logging;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog(Serilogger.Configure);
 
-// Add services to the container.
+Log.Information("Start Basket API up");
 
-builder.Services.AddControllers();
+try
+{
+    // Add services to the container.
+    builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.ConfigureServices();
+    builder.Services.ConfigureRedis(builder.Configuration);
+    builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+    var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
-app.UseAuthorization();
+    app.MapControllers();
+    app.Run();
+}
+catch (Exception ex)
+{
+    string type = ex.GetType().Name;
+    if (type.Equals("StopTheHostException", StringComparison.Ordinal))
+    {
+        throw;
+    }
 
-app.MapControllers();
+    Log.Fatal(ex, "Unhandled exception");
+}
+finally
+{
+    Log.Information("Shut down Product API complete");
+    Log.CloseAndFlush();
+}
 
-app.Run();
