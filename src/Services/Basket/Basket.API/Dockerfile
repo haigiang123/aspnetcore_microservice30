@@ -7,13 +7,14 @@ WORKDIR /src
 COPY ["Services/Basket/Basket.API/Basket.API.csproj","Services/Basket/Basket.API/"]
 COPY ["BuildingBlocks/Common.Logging/Common.Logging.csproj","BuildingBlocks/Common.Logging/"]
 COPY ["BuildingBlocks/Infrastructure/Infrastructure.csproj","BuildingBlocks/Infrastructure/"]
+COPY ["BuildingBlocks/EventBus/EventBus.Messages/EventBus.Messages.csproj", "BuildingBlocks/EventBus/EventBus.Messages/"]
 RUN dotnet restore "Services/Basket/Basket.API/Basket.API.csproj"
 COPY . . 
 WORKDIR "/src/Services/Basket/Basket.API"
 RUN dotnet build "Basket.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-WORKDIR "/src/Services/Basket/Basket.API"
+WORKDIR "/src/Services/Basket/Basket.API" 
 RUN dotnet publish "Basket.API.csproj" -c Release -o /app/publish
 
 FROM base AS final

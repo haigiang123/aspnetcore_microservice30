@@ -4,7 +4,7 @@ using Product.API.Persistence;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 Log.Information("Start Product API up");
 
 try

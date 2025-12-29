@@ -52,6 +52,7 @@ docker-compose exec baskerdb redis-cli
 - Product API: http://localhost:6002/api/products
 - Customer API: http://localhost:6003/api/products
 - Basket API: http://localhost:6004/swagger/index.html
+- Ordering API: http://localhost:6005/swagger/index.html
 
 #### 1.2 Docker Application URLs - LOCAL Environment (Docker Container):
 
@@ -63,12 +64,43 @@ docker-compose exec baskerdb redis-cli
 - Run Compound to start multi projects
 
 
-
 #### 2.1 Application URLs - DEVELOPMENT Environment:
 
 - Product API: http://localhost:5002/api/products
 - Customer API: http://localhost:5003/api/products
 - Basket API: http://localhost:5288/swagger/index.html
+- Ordering API: http://localhost:5005/swagger/index.html
+
+---
+
+## Clean Architecture
+https://github.com/jasontaylordev/cleanarchitecture
+
+
+---
+## Entity Framework (implemented following CQRS and Clean Architechture)
+### Ordering service
+Redirect into a working Folder
+```Powershell
+cd .\aspnetcore_microservice\src\Services\Ordering
+```
+
+Add a new migration
+```Powershell
+dotnet ef migrations add "Init_OrderDb" --project Ordering.Infrastructure --startup-project Ordering.API --output-dir Persistence\Migrations
+```
+
+Apply a new migration on database
+```Powershell
+dotnet ef database update "Init_OrderDb" --project Ordering.Infrastructure --startup-project Ordering.API
+```
+
+Remove a particular migration
+```Powershell
+dotnet ef migrations remove "Init_OrderDb" --project Ordering.Infrastructure --startup-project Ordering.API
+```
+
+
 
 
 
