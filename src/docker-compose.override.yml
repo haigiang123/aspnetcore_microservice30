@@ -139,9 +139,22 @@ services:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=http://+:80
         - "CacheSettings:ConnectionStrings=basketdb:6379"    
+        - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672" 
     depends_on: 
         - basketdb
     ports:
         - "6004:80"
+    restart: always
+
+  ordering.api:
+    container_name: ordering.api
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
+    depends_on: 
+        - orderdb
+    ports:
+        - "6005:80"
     restart: always
     

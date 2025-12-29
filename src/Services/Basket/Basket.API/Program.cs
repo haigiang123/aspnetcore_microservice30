@@ -1,6 +1,9 @@
 using Basket.API.Extensions;
 using Common.Logging;
+using Infrastructure.Extensions;
 using Serilog;
+using AutoMapper;
+using Basket.API;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
@@ -18,6 +21,8 @@ try
     builder.Services.ConfigureServices();
     builder.Services.ConfigureRedis(builder.Configuration);
     builder.Services.AddSwaggerGen();
+    builder.Services.ConfigureMassTransitWithRabbitMq();
+    builder.Services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
 
     var app = builder.Build();
 
