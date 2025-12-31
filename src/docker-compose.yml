@@ -13,7 +13,8 @@ services:
     image: redis:alpine
 
   inventorydb:
-    image: mongo
+    image: mongo:6
+    platform: linux/amd64
 
   #infrastructure section
   rabbitmq:

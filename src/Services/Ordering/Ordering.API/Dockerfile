@@ -14,12 +14,17 @@ COPY ["Services/Ordering/Ordering.Domain/Ordering.Domain.csproj", "Services/Orde
 COPY ["Services/Ordering/Ordering.Infrastructure/Ordering.Infrastructure.csproj", "Services/Ordering/Ordering.Infrastructure/"]
 COPY ["BuildingBlocks/Infrastructure/Infrastructure.csproj", "BuildingBlocks/Infrastructure/"]
 COPY ["BuildingBlocks/EventBus/EventBus.Messages/EventBus.Messages.csproj", "BuildingBlocks/EventBus/EventBus.Messages/"]
+
+#RUN dotnet nuget locals all --clear
+
 RUN dotnet restore "Services/Ordering/Ordering.API/Ordering.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Ordering/Ordering.API"
+#RUN dotnet build "Ordering.API.csproj" -c Release --no-restore -o /app/build
 RUN dotnet build "Ordering.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
+#RUN dotnet publish "Ordering.API.csproj" -c Release --no-restore -o /app/publish
 RUN dotnet publish "Ordering.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
