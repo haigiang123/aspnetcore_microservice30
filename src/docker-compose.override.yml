@@ -138,7 +138,7 @@ services:
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=http://+:80
-        - "CacheSettings:ConnectionStrings=basketdb:6379"    
+        - "CacheSettings:ConnectionString=basketdb:6379"    
         - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672" 
     depends_on: 
         - basketdb
@@ -151,6 +151,7 @@ services:
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=http://+:80
+        - "ConnectionStrings:DefaultConnectionString=Server=orderdb;Database=Orderdb;User Id=sa;Pwd=Passw0rd!"
         - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
     depends_on: 
         - orderdb

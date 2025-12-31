@@ -10,6 +10,5 @@ namespace Shared.Configurations
     {
         public string DBProvider { get; set; }
         public string ConnectionString { get; set; }
-        public string DatabaseName { get; set; }
     }
 }
