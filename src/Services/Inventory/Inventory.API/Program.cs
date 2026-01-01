@@ -1,6 +1,7 @@
 using Common.Logging;
 using Serilog;
 using Inventory.Product.API.Extensions;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
@@ -12,10 +13,17 @@ try
     builder.Services.AddControllers();
     builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddInfrastrutureServices();
-
+    builder.Services.ConfigureMonggoDbClient();
+    builder.Services.AddSwaggerGen();
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
     app.UseHttpsRedirection();
 

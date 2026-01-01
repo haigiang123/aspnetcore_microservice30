@@ -7,5 +7,10 @@ namespace Inventory.Product.API.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
+        [HttpGet]
+        public ActionResult Index()
+        {
+            return Redirect("~/swagger");
+        }
     }
 }
