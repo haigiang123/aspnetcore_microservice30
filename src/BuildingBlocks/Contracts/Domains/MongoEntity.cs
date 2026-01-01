@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
-namespace Inventory.Product.API.Entities.Abstraction
+namespace Contracts.Domains
 {
     public abstract class MongoEntity
     {
@@ -15,6 +15,6 @@ namespace Inventory.Product.API.Entities.Abstraction
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         [BsonElement("lastModifiedDate")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime? LastModifiedDate { get; set;} = DateTime.UtcNow;
+        public DateTime? LastModifiedDate { get; set; } = DateTime.UtcNow;
     }
 }
