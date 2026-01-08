@@ -172,3 +172,19 @@ services:
     ports:
         - "6006:80"
     restart: always
+   
+  apigw.ocelot:
+    container_name: apigw.ocelot
+    environment:
+        - ASPNETCORE_ENVIRONMENT=local
+        - ASPNETCORE_URLS=http://+:80
+        - GlobalConfiguration:BaseUrl=http://apigw.ocelot 
+    depends_on: 
+        - product.api
+        - customer.api
+        - inventory.api
+        - ordering.api
+        - basket.api
+    ports:
+        - "6020:80"
+    restart: always
