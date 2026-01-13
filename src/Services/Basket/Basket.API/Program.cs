@@ -14,8 +14,11 @@ Log.Information("Start Basket API up");
 
 try
 {
+    builder.Host.AddAppConfigurations();
+
     // Add services to the container.
     builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+    builder.Services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.ConfigureServices();
@@ -23,6 +26,8 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.ConfigureMassTransitWithRabbitMq();
     builder.Services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
+    builder.Services.AddConfigurationSettings(builder.Configuration);
+    builder.Services.ConfigureHttpClientService();
 
     var app = builder.Build();
 

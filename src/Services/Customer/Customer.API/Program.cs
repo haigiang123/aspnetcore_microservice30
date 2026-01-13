@@ -9,6 +9,10 @@ using Customer.API.Service.Interface;
 using Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;
 using Customer.API;
+using Customer.API.Extensions;
+using Infrastructure.ScheduledJob;
+using Shared.Configurations;
+using Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog(Serilogger.Configure);
@@ -17,14 +21,22 @@ Log.Information("Start Customer API up");
 
 try
 {
+    builder.Host.AddAppConfigurations();
+
     // Add services to the container.
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddConfigurationSettings(builder.Configuration);
+    builder.Services.AddTeduHangfireService();
 
-    var connectstring = builder.Configuration.GetConnectionString("DefaultConnectionString");
+    var databaseSettings = builder.Configuration.GetSection(nameof(DatabaseSettings))
+        .Get<DatabaseSettings>();
+    if (databaseSettings == null || string.IsNullOrEmpty(databaseSettings.ConnectionString))
+        throw new ArgumentNullException("Connection string is not configured.");
+    
     builder.Services.AddDbContext<CustomerContext>(
-        options => options.UseNpgsql(connectstring));
+        options => options.UseNpgsql(databaseSettings.ConnectionString));
 
     builder.Services.AddScoped<ICustomerRepository, CustomerRepository>()
                     .AddScoped(typeof(IRepositoryBase<,,>), typeof(RepositoryQueryBase<,,>))
@@ -67,9 +79,11 @@ try
         app.UseSwaggerUI();
     }
 
-    //app.UseHttpsRedirection();
+    app.UseMiddleware<ErrorWrappingMiddleware>();
 
     app.UseAuthorization();
+
+    app.UseHangfireDashboard(builder.Configuration);
 
     app.MapControllers();
 

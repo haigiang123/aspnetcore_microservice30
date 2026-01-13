@@ -11,6 +11,7 @@ using Ordering.Application.Features.V1.Orders.Commands.UpdateOrder;
 using Ordering.Application.Features.V1.Orders.Queries.GetOrders;
 using Shared.SeedWork;
 using Shared.Services;
+using Shared.Services.Email;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using IMediator = MediatR.IMediator;
