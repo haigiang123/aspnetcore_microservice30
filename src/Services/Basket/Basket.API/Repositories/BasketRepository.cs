@@ -1,62 +1,113 @@
 ﻿using Basket.API.Entities;
 using Basket.API.Repositories.Interfaces;
+using Basket.API.Services;
+using Basket.API.Services.Interfaces;
 using Contracts.Common.Interfaces;
+using Infrastructure.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
+using Shared.DTOs.ScheduledJob;
 using ILogger = Serilog.ILogger;
 
-namespace Basket.API.Repositories
+namespace Basket.API.Repositories;
+
+public class BasketRepository : IBasketRepository
 {
-    public class BasketRepository : IBasketRepository
+    private readonly IDistributedCache _redisCacheService;
+    private readonly ISerializeService _serializeService;
+    private readonly ILogger _logger;
+    private readonly BackgroundJobHttpService _backgroundJobHttp;
+    private readonly IEmailTemplateService _emailTemplateService;
+
+    public BasketRepository(IDistributedCache redisCacheService, ISerializeService serializeService, ILogger logger, BackgroundJobHttpService backgroundJobHttp, IEmailTemplateService emailTemplateService)
     {
-        private readonly ISerializeService _serializeService;
-        private readonly IDistributedCache _distributedCache;
-        private readonly ILogger _logger;
+        _redisCacheService = redisCacheService;
+        _serializeService = serializeService;
+        _logger = logger;
+        _backgroundJobHttp = backgroundJobHttp;
+        _emailTemplateService = emailTemplateService;
+    }
 
-        public BasketRepository(ISerializeService serializeService, IDistributedCache distributedCache, ILogger logger)
+    public async Task<Cart?> GetBasketByUserName(string username)
+    {
+        _logger.Information($"BEGIN: GetBasketByUserName {username}");
+        var basket = await _redisCacheService.GetStringAsync(username);
+        _logger.Information($"END: GetBasketByUserName {username}");
+
+        return string.IsNullOrEmpty(basket) ? null : _serializeService.Deserialize<Cart>(basket);
+    }
+
+    public async Task<Cart> UpdateBasket(Cart cart, DistributedCacheEntryOptions options = null)
+    {
+        DeleteReminderCheckoutOrder(cart.Username);
+        _logger.Information($"BEGIN: UpdateBasket for {cart.Username}");
+
+        if (options != null)
+            await _redisCacheService.SetStringAsync(cart.Username,
+                _serializeService.Serialize(cart), options);
+        else
+            await _redisCacheService.SetStringAsync(cart.Username,
+                _serializeService.Serialize(cart));
+
+        _logger.Information($"END: UpdateBasket for {cart.Username}");
+        try
         {
-            _serializeService = serializeService;
-            _distributedCache = distributedCache;
-            _logger = logger;
+            await TriggerSendEmailReminderCheckout(cart);
+        }
+        catch (Exception e)
+        {
+            _logger.Error($"UpdateBasket: {e.Message}");
         }
 
-        public async Task<bool> DeleteBasketFromUserName(string userName)
+        return await GetBasketByUserName(cart.Username);
+    }
+
+    private async Task TriggerSendEmailReminderCheckout(Cart cart)
+    {
+        var emailTemplate = _emailTemplateService.GenerateReminderCheckoutOrderEmail(cart.Username);
+
+        var model = new ReminderCheckoutOrderDto(cart.EmailAddress, "Reminder checkout", emailTemplate,
+            DateTimeOffset.UtcNow.AddSeconds(30));
+
+        var uri = $"{_backgroundJobHttp.ScheduledJobUrl}/send-email-reminder-checkout-order";
+        var response = await _backgroundJobHttp.Client.PostAsJson(uri, model);
+        if (response.EnsureSuccessStatusCode().IsSuccessStatusCode)
         {
-            try
+            var jobId = await response.ReadContentAs<string>();
+            if (!string.IsNullOrEmpty(jobId))
             {
-                _logger.Information($"START: DeleteBasketFromUserName on {userName}");
-                await _distributedCache.RemoveAsync(userName);
-                _logger.Information($"END: DeleteBasketFromUserName on {userName}");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("DeleteBasketFromUserName" + ex.Message);
-                throw;
+                cart.JobId = jobId;
+                await _redisCacheService.SetStringAsync(cart.Username,
+                    _serializeService.Serialize(cart));
             }
         }
+    }
 
-        public async Task<Cart?> GetBasketByUserName(string userName)
+    private async Task DeleteReminderCheckoutOrder(string username)
+    {
+        var cart = await GetBasketByUserName(username);
+        if (cart == null || string.IsNullOrEmpty(cart.JobId)) return;
+
+        var jobId = cart.JobId;
+        var uri = $"{_backgroundJobHttp.ScheduledJobUrl}/delete/jobId/{jobId}";
+        _backgroundJobHttp.Client.DeleteAsync(uri);
+        _logger.Information($"DeleteReminderCheckoutOrder:Deleted JobId: {jobId}");
+    }
+
+    public async Task<bool> DeleteBasketFromUserName(string username)
+    {
+        DeleteReminderCheckoutOrder(username);
+        try
         {
-            _logger.Information("START: GetBasketByUserName on " + userName);
-            var basket = await _distributedCache.GetStringAsync(userName);
-            _logger.Information("END: GetBasketByUserName on " + userName);
-            return !string.IsNullOrEmpty(basket) ? _serializeService.Deserialize<Cart>(basket) : null;
+            _logger.Information($"BEGIN: DeleteBasketFromUserName {username}");
+            await _redisCacheService.RemoveAsync(username);
+            _logger.Information($"END: DeleteBasketFromUserName {username}");
+
+            return true;
         }
-
-        public async Task<Cart?> UpdateBasket(Cart cart, DistributedCacheEntryOptions options = null)
+        catch (Exception e)
         {
-            _logger.Information($"START: UpdateBasket on {cart.UserName}");
-            if (options != null)
-            {
-                await _distributedCache.SetStringAsync(cart.UserName, _serializeService.Serialize(cart), options);
-            }
-            else
-            {
-                await _distributedCache.SetStringAsync(cart.UserName, _serializeService.Serialize(cart));
-            }
-            _logger.Information($"END: UpdateBasket on {cart.UserName}");
-
-            return await GetBasketByUserName(cart.UserName);
+            _logger.Error("Error DeleteBasketFromUserName: " + e.Message);
+            throw;
         }
     }
 }

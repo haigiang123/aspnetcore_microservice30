@@ -16,6 +16,9 @@ services:
     image: mongo:6
     platform: linux/amd64
 
+  hangfiredb:
+    image: mongo:6
+
   #infrastructure section
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -69,6 +72,12 @@ services:
         context: .
         dockerfile: ApiGateways/OcelotApiGw/Dockerfile
 
+  hangfire.api:
+    image: ${DOCKER_REGISTER-}hangfire.api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+        context: .
+        dockerfile: Services/ScheduledJob/Hangfire.API/Dockerfile
+
 
 #network section
 networks:
@@ -94,4 +103,6 @@ volumes:
     name: mongo_data
   pgadmin_data:
     name: pgadmin_data
+  hangfire_mongo_data:
+    name: hangfire_mongo_data
     
