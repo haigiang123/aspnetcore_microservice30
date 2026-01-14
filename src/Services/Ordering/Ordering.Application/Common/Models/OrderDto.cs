@@ -1,6 +1,6 @@
 ﻿using Ordering.Application.Common.Mappings;
 using Ordering.Domain.Entities;
-using Shared.Enums;
+using Shared.Enums.Order;
 using System;
 using System.Collections.Generic;
 using System.Linq;

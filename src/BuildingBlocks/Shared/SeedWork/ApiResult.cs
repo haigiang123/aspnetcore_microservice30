@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Shared.SeedWork
@@ -12,8 +13,7 @@ namespace Shared.SeedWork
         public string Message { get; set; }
         public T Data { get; set; }
 
-        public ApiResult() { }
-
+        [JsonConstructor]
         public ApiResult(bool isSucceeded, string message, T data)
         {
             IsSucceeded = isSucceeded;

@@ -1,6 +1,7 @@
 ﻿using Contracts.ScheduledJobs;
 using Contracts.Services;
 using Hangfire.API.Services.Interfaces;
+using Shared.Services;
 using Shared.Services.Email;
 using ILogger = Serilog.ILogger;
 

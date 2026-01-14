@@ -1,4 +1,4 @@
-﻿using Shared.Enums;
+﻿using Shared.Enums.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;

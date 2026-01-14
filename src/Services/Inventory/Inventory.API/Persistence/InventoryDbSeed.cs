@@ -1,7 +1,7 @@
 ﻿using Inventory.Product.API.Entities;
 using MongoDB.Driver;
 using Shared.Configurations;
-using Shared.Enums;
+using Shared.Enums.Inventory;
 
 namespace Inventory.Product.API.Persistence
 {

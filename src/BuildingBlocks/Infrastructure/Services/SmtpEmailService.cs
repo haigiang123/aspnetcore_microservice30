@@ -3,6 +3,7 @@ using Infrastructure.Configurations;
 using MailKit.Net.Smtp;
 using MimeKit;
 using Serilog;
+using Shared.Services;
 using Shared.Services.Email;
 
 namespace Infrastructure.Services;

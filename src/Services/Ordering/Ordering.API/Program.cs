@@ -19,16 +19,17 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddApplicationService();
     builder.Services.ConfigureMassTransit();
-    //builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddEndpointsApiExplorer();
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
 
     //app.UseHttpsRedirection();
-
+    app.UseRouting();
     app.UseAuthorization();
 
     app.MapControllers();
+    app.MapDefaultControllerRoute();
 
     // Initialise and seed database
     using (var scope = app.Services.CreateScope())
