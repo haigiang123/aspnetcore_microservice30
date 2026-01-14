@@ -1,7 +1,7 @@
 ﻿using Contracts.Domains;
 using Infrastructure.Extensions;
 using MongoDB.Bson.Serialization.Attributes;
-using Shared.Enums;
+using Shared.Enums.Inventory;
 
 namespace Inventory.Product.API.Entities
 {
@@ -19,7 +19,7 @@ namespace Inventory.Product.API.Entities
         [BsonElement("documentType")]
         public EDocumentType DocumentType { get; set; }
         [BsonElement("documentNo")]
-        public string DocumentNo { get; set; }
+        public string DocumentNo { get; set; } = Guid.NewGuid().ToString();
         [BsonElement("itemNo")]
         public string ItemNo { get; set; }
         [BsonElement("quantity")]

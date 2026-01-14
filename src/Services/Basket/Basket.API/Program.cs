@@ -31,10 +31,20 @@ try
 
     var app = builder.Build();
 
-    if (app.Environment.IsDevelopment())
+    app.UseRouting();
+    if (builder.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapGet("/", context =>
+            {
+                // await context.Response.WriteAsync($"Hello TEDU members! This is {builder.Environment.ApplicationName}");
+                context.Response.Redirect("/swagger/index.html");
+                return Task.CompletedTask;
+            });
+        });
     }
 
     app.MapControllers();
@@ -52,7 +62,7 @@ catch (Exception ex)
 }
 finally
 {
-    Log.Information("Shut down Product API complete");
+    Log.Information("Shut down Basket API complete");
     Log.CloseAndFlush();
 }
 
