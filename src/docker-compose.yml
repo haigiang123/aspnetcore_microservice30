@@ -78,6 +78,12 @@ services:
         context: .
         dockerfile: Services/ScheduledJob/Hangfire.API/Dockerfile
 
+  webhealthcheck:
+    image: ${DOCKER_REGISTER-}webhealthcheck:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+        context: .
+        dockerfile: WebHealthStatus/Dockerfile
+
 
 #network section
 networks:

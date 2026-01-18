@@ -53,6 +53,9 @@ docker-compose exec baskerdb redis-cli
 - Customer API: http://localhost:6003/api/products
 - Basket API: http://localhost:6004/swagger/index.html
 - Ordering API: http://localhost:6005/swagger/index.html
+- Inventory API: http://localhost:6006/swagger/index.html
+- Ocelot API Gateway: http://localhost:6001/swagger/index.html
+- Hangfire API: http://localhost:6008/swagger/index.html
 
 #### 1.2 Docker Application URLs - LOCAL Environment (Docker Container):
 
@@ -70,6 +73,12 @@ docker-compose exec baskerdb redis-cli
 - Customer API: http://localhost:5003/api/products
 - Basket API: http://localhost:5288/swagger/index.html
 - Ordering API: http://localhost:5005/swagger/index.html
+- Inventory API: http://localhost:5006/swagger/index.html
+- Ocelot API Gateway: http://localhost:5020/swagger/index.html
+- Hangfire API: http://localhost:5008/swagger/index.html
+- Elastic Search: http://localhost:5601/
+- Kibana: http://localhost:9200/
+- RabbitMQ: http://localhost:15672/
 
 ---
 

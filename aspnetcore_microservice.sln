@@ -21,8 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{40
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApps", "WebApps", "{C4C75A67-593F-4064-9D65-F9E854AA4D94}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{776D23E1-0A61-4A4F-BA55-AA31DCF1DD0B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Logging", "src\BuildingBlocks\Common.Logging\Common.Logging.csproj", "{6897996C-5B2B-4835-9ADF-0327BC453918}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basket", "Basket", "{9EFC071F-E5A2-4096-9479-12B30507C680}"
@@ -67,7 +65,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.API", "src\Servic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Saga.Orchestrator", "Saga.Orchestrator", "{F59BC4AE-62D6-4A42-8725-83708729B156}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saga.Orchestrator", "src\Saga.Orchestrator\Saga.Orchestrator\Saga.Orchestrator.csproj", "{6A5567EA-F591-4306-A2EE-1712FB4A63CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saga.Orchestrator", "src\Saga.Orchestrator\Saga.Orchestrator\Saga.Orchestrator.csproj", "{6A5567EA-F591-4306-A2EE-1712FB4A63CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHealthStatus", "src\WebHealthStatus\WebHealthStatus.csproj", "{9887BD30-15F8-4A03-95EB-E543819F3475}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,6 +139,10 @@ Global
 		{6A5567EA-F591-4306-A2EE-1712FB4A63CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A5567EA-F591-4306-A2EE-1712FB4A63CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A5567EA-F591-4306-A2EE-1712FB4A63CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9887BD30-15F8-4A03-95EB-E543819F3475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9887BD30-15F8-4A03-95EB-E543819F3475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9887BD30-15F8-4A03-95EB-E543819F3475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9887BD30-15F8-4A03-95EB-E543819F3475}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +175,7 @@ Global
 		{E6C89E74-D7AF-47AE-985D-979D56BB7B1F} = {E1FCFFB7-B485-4D9A-9F8F-F91A2D62D027}
 		{F59BC4AE-62D6-4A42-8725-83708729B156} = {2CE08BF2-C8BD-4784-A4C0-F8A80559F9AC}
 		{6A5567EA-F591-4306-A2EE-1712FB4A63CC} = {F59BC4AE-62D6-4A42-8725-83708729B156}
+		{9887BD30-15F8-4A03-95EB-E543819F3475} = {C4C75A67-593F-4064-9D65-F9E854AA4D94}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5DF1F82-FA27-4660-9B7E-0066FC8F946F}

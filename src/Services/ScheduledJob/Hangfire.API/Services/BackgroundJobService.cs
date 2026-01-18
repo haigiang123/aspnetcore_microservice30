@@ -1,6 +1,8 @@
 ﻿using Contracts.ScheduledJobs;
 using Contracts.Services;
 using Hangfire.API.Services.Interfaces;
+using Infrastructure.Exceptions;
+using Shared.SeedWork;
 using Shared.Services;
 using Shared.Services.Email;
 using ILogger = Serilog.ILogger;
@@ -34,15 +36,14 @@ public class BackgroundJobService : IBackgroundJobService
         try
         {
             var jobId = _jobService.Schedule(() => _emailService.SendEmail(emailRequest), enqueueAt);
-            _logger.Information($"Sent email to {email} with subject: {subject} - Job Id: {jobId}");
+            _logger.Information($"Sent email to {Int32.Parse("aa") + email} with subject: {subject} - Job Id: {jobId}");
 
             return jobId;
         }
         catch (Exception ex)
         {
             _logger.Error($"failed due to an error with the email service: {ex.Message}");
+            throw new BadRequestException(ex.Message);
         }
-
-        return null;
     }
 }

@@ -7,6 +7,9 @@ using System.Runtime;
 using Infrastructure.Extensions;
 using Basket.API.Services.Interfaces;
 using Basket.API.Services;
+using Common.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Infrastructure.Policies;
 
 namespace Basket.API.Extensions
 {
@@ -34,12 +37,17 @@ namespace Basket.API.Extensions
         {
             return services.AddScoped<IBasketRepository, BasketRepository>()
                 .AddTransient<ISerializeService, SerializeService>()
-                .AddTransient<IEmailTemplateService, BasketEmailTemplateService>();
+                .AddTransient<IEmailTemplateService, BasketEmailTemplateService>()
+                .AddTransient<LoggingDelegatingHandler>();
         }
 
         public static void ConfigureHttpClientService(this IServiceCollection services)
         {
-            services.AddHttpClient<BackgroundJobHttpService>();
+            services.AddHttpClient<BackgroundJobHttpService>()
+                .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                .UseLinerHttpRetryPolling(3)
+                .UseCircuitBreakerPolicy()
+                .ConfigureTimeoutPolicy();
         }
 
         public static void ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
