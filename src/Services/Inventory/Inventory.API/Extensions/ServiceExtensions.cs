@@ -1,10 +1,10 @@
-﻿using AutoMapper;
-using Infrastructure.Extensions;
+﻿using Infrastructure.Extensions;
 using Inventory.API.Services;
 using Inventory.API.Services.Interfaces;
-using Inventory.Product.API.Entities;
-using MongoDB.Driver;
 using Shared.Configurations;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using MongoDB.Driver;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Inventory.Product.API.Extensions
 {
@@ -41,6 +41,14 @@ namespace Inventory.Product.API.Extensions
         {
             services.AddSingleton<IMongoClient>(new MongoClient(GetMonggoConnectionString(services)))
                 .AddScoped(x => x.GetService<IMongoClient>()?.StartSession());
+        }
+
+        public static void ConfigureHealthChecks(this IServiceCollection services)
+        {
+            var databaseSettings = services.GetOptions<DatabaseSettings>(nameof(DatabaseSettings));
+            services.AddHealthChecks().AddMongoDb(mongodbConnectionString: databaseSettings.ConnectionString,
+                    name: "Inventory MongoDb Health",
+                    failureStatus: HealthStatus.Degraded);
         }
     }
 }

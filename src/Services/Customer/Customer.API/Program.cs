@@ -87,8 +87,8 @@ try
 
     app.MapControllers();
 
-    app.SeedCustomerData().Run();
-    //app.Run();
+    //app.SeedCustomerData().Run();
+    app.Run();
 
 }
 catch (Exception ex)

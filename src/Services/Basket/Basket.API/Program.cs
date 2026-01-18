@@ -2,7 +2,6 @@ using Basket.API.Extensions;
 using Common.Logging;
 using Infrastructure.Extensions;
 using Serilog;
-using AutoMapper;
 using Basket.API;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();

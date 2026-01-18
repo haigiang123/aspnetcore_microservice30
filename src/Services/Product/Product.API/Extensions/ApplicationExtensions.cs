@@ -1,4 +1,7 @@
-﻿namespace Product.API.Extensions
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
+namespace Product.API.Extensions
 {
     public static class ApplicationExtensions
     {
@@ -11,9 +14,15 @@
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-            app.UseEndpoints(x =>
+
+            app.UseEndpoints(endpoints =>
             {
-                x.MapDefaultControllerRoute();
+                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }

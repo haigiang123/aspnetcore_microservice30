@@ -4,6 +4,8 @@ using Serilog;
 using Ordering.Infrastructure.Persistence;
 using Ordering.Application;
 using Ordering.API.Extensions;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Information("Start Order API up");
@@ -20,6 +22,7 @@ try
     builder.Services.AddApplicationService();
     builder.Services.ConfigureMassTransit();
     builder.Services.AddEndpointsApiExplorer();
+    builder.Services.ConfigureHealthChecks();
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -44,6 +47,17 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
+    app.UseEndpoints(options =>
+    {
+        options.MapHealthChecks("/hc", new HealthCheckOptions()
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+
+        options.MapDefaultControllerRoute();
+    });
 
     app.Run();
 }

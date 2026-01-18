@@ -1,4 +1,5 @@
-﻿using Saga.Orchestrator.HttpRepository;
+﻿using Common.Logging;
+using Saga.Orchestrator.HttpRepository;
 using Saga.Orchestrator.HttpRepository.Interfaces;
 using Saga.Orchestrator.Services;
 using Saga.Orchestrator.Services.Interfaces;
@@ -10,6 +11,7 @@ namespace Saga.Orchestrator.Extensions
         public static void ConfigServices(this IServiceCollection services)
         {
             services.AddTransient<ICheckoutSagaService, CheckoutSagaService>();
+            services.AddTransient<LoggingDelegatingHandler>();
         }
 
         public static void ConfigHttpRepository(this IServiceCollection services)
@@ -31,7 +33,7 @@ namespace Saga.Orchestrator.Extensions
             services.AddHttpClient<IOrderHttpRepository,  OrderHttpRepository>("OrdersAPI", (provider, httpClient) =>
             {
                 httpClient.BaseAddress = new Uri("http://localhost:5005/api/v1/");
-            });
+            }).AddHttpMessageHandler<LoggingDelegatingHandler>();
 
             services.AddScoped(x => x.GetService<IHttpClientFactory>().CreateClient("OrdersAPI"));
         }
@@ -41,7 +43,7 @@ namespace Saga.Orchestrator.Extensions
             services.AddHttpClient<IBasketHttpRepository, BasketHttpRepository>("BasketsAPI", (provider, httpClient) =>
             {
                 httpClient.BaseAddress = new Uri("http://localhost:5004/api/");
-            });
+            }).AddHttpMessageHandler<LoggingDelegatingHandler>();
 
             services.AddScoped(x => x.GetService<IHttpClientFactory>().CreateClient("BasketsAPI"));
         }
@@ -51,7 +53,7 @@ namespace Saga.Orchestrator.Extensions
             services.AddHttpClient<IInventoryHttpRepository, InventoryHttpRepository>("InventorysAPI", (provider, httpClient) =>
             {
                 httpClient.BaseAddress = new Uri("http://localhost:5006/api/");
-            });
+            }).AddHttpMessageHandler<LoggingDelegatingHandler>();
 
             services.AddScoped(x => x.GetService<IHttpClientFactory>().CreateClient("InventorysAPI"));
         }
